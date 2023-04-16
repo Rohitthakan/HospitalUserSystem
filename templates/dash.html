@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Bridge - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+        /* Style for navbar */
+        .navbar {
+            background-color: #29323c;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        /* Style for navbar links */
+        .navbar a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            line-height: 50px;
+        }
+
+        /* Style for navbar links on hover */
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Style for profile image icon */
+        .profile-image {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            padding: 10px 16px;
+            color: white;
+            font-size: 20px;
+            line-height: 50px;
+        }
+
+        /* Style for body element */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .welcome {
+            padding-top: 8%;
+            padding-left: 2%;
+        }
+
+        .add-blog a {
+            text-decoration: none;
+            color: black;
+            margin-left: 2%;
+            padding: 1%;
+            border: 2px solid black
+        }
+
+        #fullblog {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="#" style="padding-left: 16px;">User Bridge</a>
+        {% if user.is_authenticated %}
+        <li><a href="/logout" id="logintab" style="float: right;" data-after="Logout">Logout</a></li>
+        {% else %}
+        <li><a href="/login" id="logintab" style="float: right;" data-after="Login">Login</a></li>
+        {% endif%}
+        {% if user.is_authenticated %}
+        <div class="profile-image">
+            {% for document in documents %}
+            <img src="{{ document.document.url }}" width="50" height="50" style="border-radius: 50%;"
+                alt="Profile Image">
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="profile-image">
+            <img src="https://example.com/profile-image.png" alt="Profile Image">
+        </div>
+        {% endif%}
+    </div>
+
+    <!-- Website Name -->
+    <h1 style="padding-top: 50px;"></h1>
+    <div class="welcome">
+        {% if user.is_authenticated %}
+        <h1>Welcome {{ user.userprofileinfo.type }} {{ user.first_name }} {{ user.last_name}}</h1>
+        <h2>User Profile Info:</h2>
+        <ul>
+            <li>First Name: {{ user.first_name }}</li>
+            <li>Last Name: {{ user.last_name}}</li>
+            <li>Username: {{ user.username }}</li>
+            <li>Email Id: {{ user.email }}</li>
+            <li>Address: {{ user.userprofileinfo.address }}</li>
+        </ul>
+        {% endif %}
+    </div>
+    <br>
+    <div class="add-blog">
+        {% if user.is_authenticated %}
+        {% if user.userprofileinfo.type == 'Doctor' %}
+        <h1><a href="/blog">Add Blog</a></h1>
+        {% endif %}
+        <div>
+            <div class="container px-5">
+                <h2 class="my-4 px-5">Select Category:</h2>
+                <form method="POST" enctype="multipart/form-data" class="px-5">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <select id="exam_type" name="category" style="width: 15%; padding: 4px;" class="py-1" required>
+                            <option style="font-size: 2;" selected disabled>Select</option>
+                            <option value="Mental Health">Mental Health</option>
+                            <option value="Heart Disease">Heart Disease</option>
+                            <option value="Covid-19">Covid-19</option>
+                            <option value="Immunization">Immunization</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="btn" class="btn btn-dark my-4">Submit</button>
+                </form>
+            </div>
+
+            <h1 class="mx-5">Blogs</h1>
+            <div class="card">
+                <div class="row mx-3">
+                    {% if blogs %}
+                    {% for item in blogs %}
+                    <div class="card mx-4 my-2 px-0" style="width: 17rem;">
+                        <a href="/media/{{item.image}}"><img src="media/{{item.image}}" class="card-img-top"
+                                alt="..."></a>
+                        <div class="card-body">
+                            <div class="card-title text-center text-dark">
+                                <h4>{{item.sno}}</h4>
+                            </div>
+                            <div class="card-title text-center text-dark">
+                                <h4>{{item.title}}</h4>
+                            </div>
+                            <div class="card-text text-center">{{item.summary|slice:15}}...</div>
+                            {% if item.draft %}
+                            <p><strong>Draft</strong></p>
+                            {% endif %}
+                            <button class="btn btn-dark"><a href="{% url 'blogpost' pk=item.sno %}"
+                                    id="fullblog">Read</a></button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                </div>
+                No Blog found
+                {% endif %}
+            </div>
+
+        </div>
+        {% if user.userprofileinfo.type == 'Patient' %}
+        <br>
+        <div class="my-3 mx-5" style="display: flex; flex-direction: row; text-align: center; align-items: center;">
+            <h2>Booked Appointments</h2>
+            <a href="{% url 'appointments_list' %}" class="btn btn-dark"><button class="btn btn-dark"
+                    style="color: white;">Appointments List</button></a>
+        </div>
+        <br>
+        <h1 class="mx-5">Available Doctors:</h1>
+        <div>
+            {% for doctor in doctors %}
+            <div class="my-3 mx-5" style="display: flex; flex-direction: row; text-align: center; align-items: center;">
+                {% with doctor.picture_set.first as picture %}
+                {% if picture %}
+                <img src="{{ picture.document.url }}" width="50" height="50" style="border-radius: 50%;"
+                alt="Profile Image">
+                {% else %}
+                No document found for {{ doctor.user.username }}
+                {% endif %}
+                {% endwith %}
+                <h3>{{ doctor.first_name }} {{ doctor.last_name }}</h3>
+                <a href="{% url 'appointment' pk=doctor.userprofileinfo.id %}" class="btn btn-dark"><button
+                        class="btn btn-dark" style="color: white;">Book Appointment</button></a>
+            </div>
+            {% empty %}
+            <div>No doctors available</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% endif %}
+    </div>
+    {% if user.userprofileinfo.type == 'Doctor' %}
+    <br>
+    <div class="my-3 mx-5" style="display: flex; flex-direction: row; text-align: center; align-items: center;">
+        <h2>Booked Appointments</h2>
+        <a href="{% url 'appointments_list' %}" class="btn btn-dark"><button class="btn btn-dark"
+                style="color: white;">Appointments List</button></a>
+    </div>
+    <br>
+    {% endif %}
+
+</body>
+
+</html>

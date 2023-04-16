@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Bridge - Home</title>
+    <style>
+        /* Style for navbar */
+        .navbar {
+            background-color: #29323c;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        /* Style for navbar links */
+        .navbar a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            line-height: 50px;
+        }
+
+        /* Style for navbar links on hover */
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Style for profile image icon */
+        .profile-image {
+            position: absolute;
+            top: 20px;
+            right: 180px;
+            padding: 10px 16px;
+            color: white;
+            font-size: 20px;
+            line-height: 50px;
+        }
+
+        /* Style for body element */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .welcome {
+            padding-top: 3%;
+            padding-left: 2%;
+        }
+        .index-heading{
+            
+            text-decoration: none;
+            padding-left: 2%;
+        }
+        .container{
+            margin-top: 5%;
+            margin-left:2%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="#" style="padding-left: 16px;">User Bridge</a>
+        <li><a href="/dash" id="logintab" style="float: right;" data-after="Logout">Go To Dashboard</a></li>
+        {% if user.is_authenticated %}
+        <div class="profile-image">
+            <img src="media/{{user.userprofileinfo.picture}}" width="50" height="50" style="border-radius: 50%;" alt="Profile Image">
+        </div>
+        {% else %}
+        <div class="profile-image">
+            <img src="https://example.com/profile-image.png" alt="Profile Image">
+        </div>
+        {% endif%}
+    </div>
+
+    <!-- Website Name -->
+    <h1 style="padding-top: 50px;"></h1>
+
+    <div class="container">
+        <h1 id="dashheading"><a href="/dash" class="index-heading">Welcome to UserBridge. Click here to go to Dashboard</a></h1>
+    </div>
+</body>
+
+</html>
