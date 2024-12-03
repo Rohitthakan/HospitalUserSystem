@@ -2,7 +2,7 @@
 
 HospitalUserSystem is a web application designed to streamline and simplify the management of hospital operations. It allows doctors and patients to register, book appointments, and manage patient lists efficiently. Built using Django, this platform ensures seamless interaction between doctors and patients while providing a user-friendly interface.
 
-##Features
+## Features
 1. User Registration
 
 - Separate registration for doctors and patients.
